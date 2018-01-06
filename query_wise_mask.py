@@ -197,7 +197,6 @@ def query_mask_value(ra, dec, coadd_fn=coadd_fn, coadd_dir=coadd_dir, verbose=Tr
     Inputs
     ------
     ra, dec: coordinates of the objects;
-    coadd_idx: the coadd index for each object;
     coadd_fn: location of the coadd table;
     coadd_dir: directory of the WISE mask images;
     
