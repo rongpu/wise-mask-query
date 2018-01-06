@@ -1,0 +1,20 @@
+MBP[wise-mask-query]$more misc/unwise-2084p378-msk.fits
+SIMPLE  =                    T / Written by IDL:  Wed Oct 12 19:17:02 2016      
+BITPIX  =                    8 / Number of bits per data pixel                  
+NAXIS   =                    2 / Number of data axes                            
+NAXIS1  =                 2048 /                                                
+NAXIS2  =                 2048 /                                                
+CTYPE1  = 'RA---TAN'           / Coordinate Type                                
+CTYPE2  = 'DEC--TAN'           / Coordinate Type                                
+EQUINOX =              2000.00 / Equinox of Ref. Coord.                         
+CD1_1   =   -0.000763888888889 / Degrees / Pixel                                
+CD2_1   =        0.00000000000 / Degrees / Pixel                                
+CD1_2   =        0.00000000000 / Degrees / Pixel                                
+CD2_2   =    0.000763888888889 / Degrees / Pixel                                
+CRPIX1  =        1024.50000000 / Reference Pixel in X                           
+CRPIX2  =        1024.50000000 / Reference Pixel in Y                           
+CRVAL1  =        208.422369000 / R.A. (degrees) of reference pixel              
+CRVAL2  =        37.8611110000 / Declination of reference pixel                 
+LONPOLE =        180.000000000 / Native longitude of Celestial pole             
+LATPOLE =        0.00000000000 / Celestial latitude of native pole              
+HISTORY PUTAST: Oct 12 19:17:02 2016 World Coordinate System parameters written END

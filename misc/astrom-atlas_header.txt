@@ -1,0 +1,52 @@
+rongpu@cori07:useful> more astrom-atlas.fits
+SIMPLE  =                    T /Dummy Created by MWRFITS v1.11                  
+BITPIX  =                    8 /Dummy primary header created by MWRFITS         
+NAXIS   =                    0 /No data is associated with this header          
+EXTEND  =                    T /Extensions may (will!) be present               
+END                                                                             
+
+XTENSION= 'BINTABLE'           /Binary table written by MWRFITS v1.11           
+BITPIX  =                    8 /Required value                                  
+NAXIS   =                    2 /Required value                                  
+NAXIS1  =                  144 /Number of bytes per row                         
+NAXIS2  =                18240 /Number of rows                                  
+PCOUNT  =                    0 /Normally 0 (no varying arrays)                  
+GCOUNT  =                    1 /Required value                                  
+TFIELDS =                   10 /Number of columns in table                      
+COMMENT                                                                         
+COMMENT  *** End of mandatory fields ***                                        
+COMMENT                                                                         
+COMMENT                                                                         
+COMMENT  *** Column names ***                                                   
+COMMENT                                                                         
+TTYPE1  = 'COADD_ID'           /                                                
+TTYPE2  = 'NAXIS   '           /                                                
+TTYPE3  = 'CD      '           /                                                
+TTYPE4  = 'CDELT   '           /                                                
+TTYPE5  = 'CRPIX   '           /                                                
+TTYPE6  = 'CRVAL   '           /                                                
+TTYPE7  = 'CTYPE   '           /                                                
+TTYPE8  = 'LONGPOLE'           /                                                
+TTYPE9  = 'LATPOLE '           /                                                
+TTYPE10 = 'PV2     '           /                                                
+COMMENT                                                                         
+COMMENT  *** Column formats ***                                                 
+COMMENT                                                                         
+TFORM1  = '8A      '           /                                                
+TFORM2  = '2J      '           /                                                
+TFORM3  = '4D      '           /                                                
+TFORM4  = '2D      '           /                                                
+TFORM5  = '2D      '           /                                                
+TFORM6  = '2D      '           /                                                
+TFORM7  = '16A     '           /                                                
+TFORM8  = 'D       '           /                                                
+TFORM9  = 'D       '           /                                                
+TFORM10 = '2D      '           /                                                
+COMMENT                                                                         
+COMMENT  *** Column dimensions (2 D or greater) ***                             
+COMMENT                                                                         
+TDIM3   = '( 2, 2) '           /                                                
+TDIM7   = '(8, 2)  '           /                                                
+END                                                                             
+                                                                                
+                                                                                
