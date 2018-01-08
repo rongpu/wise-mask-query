@@ -84,10 +84,9 @@ def query_wise_coadd(ra, dec, coadd_fn=coadd_fn, verbose=True):
     pixcrd_y = np.zeros([3, len(ra)])
 
     # Check if objects are the 3 nearest coadds
-    # and compute the distances to the nearest boundary
+    # and find the pixel coordinates
     inside = np.zeros([3, len(ra)], dtype=bool)
     order_str = ['nearest', 'second nearest', 'third nearest']
-    d2b = -1.*np.ones([3, len(ra)])
 
     for index1 in range(3):
         if verbose:
@@ -162,7 +161,7 @@ def query_wise_coadd(ra, dec, coadd_fn=coadd_fn, verbose=True):
     for index in range(3):
         mask = (~inside[index])
         coadd_idx[index][mask] = -1
-        
+
     # For objects inside 2 or 3 coadds, choose the coadd with the 
     # largest index number
     coadd_idx_final[mask_overlap] = np.max(coadd_idx, axis=0)[mask_overlap]
