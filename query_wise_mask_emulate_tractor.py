@@ -1,3 +1,5 @@
+# Emulate tractor's choice of best WISE coadd
+
 from __future__ import division, print_function
 import numpy as np
 import matplotlib.pyplot as plt
@@ -63,7 +65,7 @@ def query_wise_coadd(ra, dec, coadd_fn=coadd_fn, verbose=True):
     coadd = Table.read(coadd_fn)
 
     if verbose: print('Matching to the nearest WISE coadds\n')
-    
+
     ra1=np.array(coadd['ra_center'])
     dec1=np.array(coadd['dec_center'])
     ra2=np.array(ra)
@@ -111,8 +113,6 @@ def query_wise_coadd(ra, dec, coadd_fn=coadd_fn, verbose=True):
             mask &= (pixcrd[:, 1]>0.5) & (pixcrd[:, 1]<2048.5)
             inside[index1, cat_mask] = mask
             pixcrd_x1, pixcrd_y1 = pixcrd.transpose()
-            d2b_all_boundaries = np.stack((pixcrd_x1 - 0.5, 2048.5-pixcrd_x1, pixcrd_y1 - 0.5, 2048.5-pixcrd_y1))
-            d2b[index1][cat_mask] = np.min(d2b_all_boundaries, axis=0)
             pixcrd_x[index1][cat_mask] = pixcrd_x1
             pixcrd_y[index1][cat_mask] = pixcrd_y1            
             
@@ -158,29 +158,19 @@ def query_wise_coadd(ra, dec, coadd_fn=coadd_fn, verbose=True):
 
     mask_overlap = (coadd_idx_final==-1)
 
-    # Assign negative distance to irrelavant coadds
-    # so that they will not be chosen
+    # Assign negative coadd index number to irrelavant coadds
     for index in range(3):
-        d2b[index][~inside[index]] = -1.
+        mask = (~inside[index])
+        coadd_idx[index][mask] = -1
         
-    # For objects inside 2 or 3 coadds, choose the coadd whose 
-    # boundaries are farthest away from the object
-    argmax = np.argmax(d2b, axis=0)
-    mask = mask_overlap & (argmax==0)
-    coadd_idx_final[mask] = coadd_idx[0][mask]
-    pixcrd_x_final[mask] = pixcrd_x[0][mask]
-    pixcrd_y_final[mask] = pixcrd_y[0][mask]
-    choice_id[mask] = 0
-    mask = mask_overlap & (argmax==1)
-    coadd_idx_final[mask] = coadd_idx[1][mask]
-    pixcrd_x_final[mask] = pixcrd_x[1][mask]
-    pixcrd_y_final[mask] = pixcrd_y[1][mask]
-    choice_id[mask] = 1
-    mask = mask_overlap & (argmax==2)
-    coadd_idx_final[mask] = coadd_idx[2][mask]
-    pixcrd_x_final[mask] = pixcrd_x[2][mask]
-    pixcrd_y_final[mask] = pixcrd_y[2][mask]
-    choice_id[mask] = 2
+    # For objects inside 2 or 3 coadds, choose the coadd with the 
+    # largest index number
+    coadd_idx_final[mask_overlap] = np.max(coadd_idx, axis=0)[mask_overlap]
+    choice_id[mask_overlap] = np.argmax(coadd_idx, axis=0)[mask_overlap]
+    for index in range(3):
+        mask = choice_id==index
+        pixcrd_x_final[mask] = pixcrd_x[index][mask]
+        pixcrd_y_final[mask] = pixcrd_y[index][mask]
 
     if verbose:
         print('{} ({:.1f}%) objects belong to the nearest coadd'
