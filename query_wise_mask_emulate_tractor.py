@@ -121,7 +121,7 @@ def query_wise_coadd(ra, dec, n_match, coadd_fn=coadd_fn, verbose=True):
               .format(np.sum(inside[index1]), np.sum(inside[index1])/len(ra)*100., order_str[index1]))
 
     if np.sum((~inside[0]) & (~inside[1]) & (~inside[2]))!=0:
-        raise ValueError('EROR: coadd not found!')
+        raise ValueError('ERROR: WISE mask coadd not found!')
 
     # Identify objects that only appear in one coadd
     inside_only_one_coadd = np.zeros([n_match, len(ra)], dtype=bool)
@@ -193,7 +193,12 @@ def query_mask_value(ra, dec, n_match, coadd_fn=coadd_fn, coadd_dir=coadd_dir, v
     
     Output
     ------
-    wise_mask: the WISE mask value at each object loation.
+    mask_value: the WISE mask value at each object loation.
+
+    Note: the following script converts mask_value to wisemask_w1 and wisemask_w2 in the
+    DECaLS catalogs:
+        wisemask_w1 = mask_value%4
+        wisemask_w2 = mask_value//4
     '''
 
     coadd_idx, pixcrd_x, pixcrd_y = query_wise_coadd(ra, dec, n_match, coadd_fn)
