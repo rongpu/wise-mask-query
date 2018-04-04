@@ -23,18 +23,32 @@ def catalog_mask(d2d, w1_ab):
     '''
     w1_ab: W1 magnitude in AB;
     d2d: distance in arcmin;
+
+    Return:
+    
     '''
     
     # True corresponds to contaminated
     flag = np.zeros(len(d2d), dtype=bool)
 
     mask = w1_ab>10.
+    
     flag[mask] = d2d[mask] < (a/(w1_ab[mask]-b) + c)
+
+    # Bright stars with W1_AB<10.0 contaminates everything within 
+    # the search radius
     flag[~mask] = True
     
     return flag
 
 def query_catalog_mask(ra, dec):
+    '''
+    Input:
+    ra, dec: coordinates;
+
+    Return:
+    cat_flag: array of mask value; the location is masked (contaminated) if True.
+    '''
 
     # Load trimmed WISE bright star catalog
     wisecat = Table.read('/global/homes/r/rongpu/mydesi/useful/w1_bright-13.3_trim_dr5_region_lrg_matched.fits')
