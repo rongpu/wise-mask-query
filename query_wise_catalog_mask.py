@@ -51,7 +51,7 @@ def query_catalog_mask(ra, dec):
     '''
 
     # Load trimmed WISE bright star catalog
-    wisecat = Table.read('/global/homes/r/rongpu/mydesi/useful/w1_bright-13.3_trim_dr5_region_lrg_matched.fits')
+    wisecat = Table.read('/global/homes/r/rongpu/mydesi/useful/w1_bright-13.3_trim_dr5_region.fits')
 
     w1_ab = np.array(wisecat['W1MPRO']) + 2.7
 
