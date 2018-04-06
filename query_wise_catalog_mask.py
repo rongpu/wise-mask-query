@@ -69,7 +69,7 @@ def query_catalog_mask(ra, dec):
     idx2_3, idx1_3, d2d_3, _, _ = match_coord.match_coord(ra2, dec2, ra, dec, search_radius=search_radius, 
                                     nthneighbor=3, keep_all_pairs=True, plot_q=False, verbose=False)
 
-    cat_flag = np.zeros(len(cat), dtype=bool)
+    cat_flag = np.zeros(len(ra), dtype=bool)
 
     cat_flag[idx1_1] = cat_flag[idx1_1] | catalog_mask(d2d_1*60., w1_ab[idx2_1])
     print('+1st nearest neighbor:', np.sum(cat_flag))
