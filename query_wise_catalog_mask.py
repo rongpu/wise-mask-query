@@ -8,7 +8,7 @@ import sys, os
 from astropy.table import Table
 from astropy.coordinates import SkyCoord
 
-sys.path.append('/global/homes/r/rongpu/git/Python/user_modules/')
+sys.path.append(os.path.expanduser("~")+'/git/Python/user_modules')
 import match_coord
 
 # Maximum mask radius
