@@ -1,4 +1,4 @@
-# Query the WISE mask that is optimized for LRG selection
+# Query the WISE pixel mask that is optimized for LRG selection
 # Note that the mask location is temporary
 
 from __future__ import division, print_function
