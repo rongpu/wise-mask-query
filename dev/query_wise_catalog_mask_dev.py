@@ -133,7 +133,7 @@ def catalog_mask_function2(d2d, w1_ab):
 
 def query_catalog_mask2(ra, dec):
     '''
-    Catalog-based WISE mask for bright stars of W1_AB > 10.0.
+    Catalog-based WISE mask for bright stars of W1_AB < 10.0.
 
     Input:
     ra, dec: coordinates;
