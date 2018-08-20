@@ -203,14 +203,14 @@ def query_catalog_mask(ra, dec, diff_spikes=True, return_diagnostics=False, wise
             w1_source[idx_decals[ds_contam]] = w1_ab[mask_wise][idx_wise[ds_contam]]
             d2d_source[idx_decals[ds_contam]] = d2d[ds_contam]
 
-            print('{} objects masked by circular mask'.format(np.sum(circ_flag)))
-            print('{} additionally objects masked by diffraction spikes mask'.format(np.sum(cat_flag)-np.sum(circ_flag)))
-            print('{} objects masked by the combined masks'.format(np.sum(cat_flag)))
+            print('{} objects masked by circular mask'.format(np.sum(circ_contam)))
+            print('{} additionally objects masked by diffraction spikes mask'.format(np.sum(circ_contam | ds_contam)-np.sum(circ_contam)))
+            print('{} objects masked by the combined masks'.format(np.sum(circ_contam | ds_contam)))
             print()
 
         else:
 
-            print('{} objects masked'.format(np.sum(circ_flag)))
+            print('{} objects masked'.format(np.sum(circ_contam)))
             print()
 
     if not diff_spikes:
