@@ -69,7 +69,7 @@ def ds_mask_widths_func(w1_ab):
     return widths
 
 
-def ds_mask_radii_func(w1_ab):
+def ds_mask_length_func(w1_ab):
     '''
     Define mask radii for diffraction spikes
     
@@ -86,10 +86,10 @@ def ds_mask_radii_func(w1_ab):
     radii = np.zeros(len(w1_ab))
     mask = w1_ab<=8.0 # set maximum mask radius at W1==8.0
     if np.sum(mask)>0:
-        radii[mask] = np.exp(-0.41*8+8.9)
+        radii[mask] = 2 * np.exp(-0.41*8+8.9)
     mask = (w1_ab>8.0) & (w1_ab<=13.0)
     if np.sum(mask)>0:
-        radii[mask] = np.exp(-0.41*w1_ab[mask]+8.9)
+        radii[mask] = 2 * np.exp(-0.41*w1_ab[mask]+8.9)
     mask = (w1_ab>13.0)
     if np.sum(mask)>0:
         radii[mask] = 0
@@ -112,14 +112,17 @@ def ds_masking_func(d_ra, d_dec, d2d, w1_ab):
     '''
     
     ds_mask_widths = ds_mask_widths_func(w1_ab)
-    ds_mask_radii = ds_mask_radii_func(w1_ab)
+    ds_mask_length = ds_mask_length_func(w1_ab)
 
     mask1 = d_dec > (d_ra - ds_mask_widths/np.sqrt(2))
     mask1 &= d_dec < (d_ra + ds_mask_widths/np.sqrt(2))
+    mask1 &= (d_dec < -d_ra + ds_mask_length/np.sqrt(2)) & (d_dec > -d_ra - ds_mask_length/np.sqrt(2))
+
     mask2 = d_dec > (-d_ra - ds_mask_widths/np.sqrt(2))
     mask2 &= d_dec < (-d_ra + ds_mask_widths/np.sqrt(2))
-        
-    ds_flag = (mask1 | mask2) & (d2d<ds_mask_radii)
+    mask2 &= (d_dec < +d_ra + ds_mask_length/np.sqrt(2)) & (d_dec > +d_ra - ds_mask_length/np.sqrt(2))
+
+    ds_flag = (mask1 | mask2)
     
     return ds_flag
 
@@ -165,6 +168,9 @@ def query_catalog_mask(ra, dec, diff_spikes=True, return_diagnostics=False, wise
     w1_source = np.zeros(len(ra), dtype=float)
     d2d_source = np.zeros(len(ra), dtype=float)
 
+    ra2, dec2 = map(np.copy, [decals_lon, decals_lat])
+    sky2 = SkyCoord(ra2*u.degree,dec2*u.degree, frame='icrs')
+
     for index in range(len(w1_bins)-1):
 
         mask_wise = (w1_ab>=w1_bins[index]) & (w1_ab<=w1_bins[index+1])
@@ -178,10 +184,26 @@ def query_catalog_mask(ra, dec, diff_spikes=True, return_diagnostics=False, wise
         if not diff_spikes:
             search_radius = np.max(circular_mask_radii_func(w1_ab[mask_wise]))
         else:
-            search_radius = np.max([circular_mask_radii_func(w1_ab[mask_wise]), ds_mask_radii_func(w1_ab[mask_wise])])
+            search_radius = np.max([circular_mask_radii_func(w1_ab[mask_wise]), 0.5*ds_mask_length_func(w1_ab[mask_wise])])
 
         # Find all pairs within the search radius
-        idx_wise, idx_decals, d2d, d_ra, d_dec = search_around(wise_lon[mask_wise], wise_lat[mask_wise], decals_lon, decals_lat, search_radius=search_radius)
+        ra1, dec1 = map(np.copy, [wise_lon[mask_wise], wise_lat[mask_wise]])
+        sky1 = SkyCoord(ra1*u.degree,dec1*u.degree, frame='icrs')
+        idx_wise, idx_decals, d2d, _ = sky2.search_around_sky(sky1, seplimit=search_radius*u.arcsec)
+        print('%d nearby objects'%len(idx_wise))
+        
+        # convert distances to numpy array in arcsec
+        d2d = np.array(d2d.to(u.arcsec))
+
+        d_ra = (ra2[idx_decals]-ra1[idx_wise])*3600.    # in arcsec
+        d_dec = (dec2[idx_decals]-dec1[idx_wise])*3600. # in arcsec
+        ##### Convert d_ra to actual arcsecs #####
+        mask = d_ra > 180*3600
+        d_ra[mask] = d_ra[mask] - 360.*3600
+        mask = d_ra < -180*3600
+        d_ra[mask] = d_ra[mask] + 360.*3600
+        d_ra = d_ra * np.cos(dec1[idx_wise]/180*np.pi)
+        ##########################################
 
         # circular mask
         mask_radii = circular_mask_radii_func(w1_ab[mask_wise][idx_wise])
