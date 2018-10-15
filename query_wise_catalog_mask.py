@@ -10,9 +10,6 @@ from astropy.coordinates import SkyCoord
 from scipy.interpolate import interp1d
 from astropy import units as u
 
-sys.path.append(os.path.expanduser("~")+'/git/Python/user_modules/')
-from match_coord import search_around
-
 wise_cat_path_default = '/Users/roz18/Documents/Data/desi_lrg_selection/wisemask/w1_bright-13.3_trim_dr7_region_matched.fits'
 # wise_cat_path = '/global/homes/r/rongpu/mydesi/useful/w1_bright-13.3_trim_dr5_region.fits'
 
