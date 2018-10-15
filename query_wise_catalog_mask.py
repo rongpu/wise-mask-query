@@ -16,84 +16,19 @@ from match_coord import search_around
 wise_cat_path_default = '/Users/roz18/Documents/Data/desi_lrg_selection/wisemask/w1_bright-13.3_trim_dr7_region_matched.fits'
 # wise_cat_path = '/global/homes/r/rongpu/mydesi/useful/w1_bright-13.3_trim_dr5_region.fits'
 
-def circular_mask_radii_func(w1_ab):
-    '''
-    Evaluate the WISE bright star circular mask radius for given W1 magnitude
 
-    Inputs
-    ------
-    w1_ab: W1 magnitude in AB (array);
+# Define the radius mask of the circular mask
+x, y = np.transpose([[4.5, 210.], [5.5, 200.], [6.25, 150.], [6.75, 125.], [7.25, 120.], [7.75, 110.], [8.25, 100.], [8.75,  75.], [9.25,  60.], [9.75,  55.], [ 10.25,  50.], [ 10.75,  48.], [ 11.25,  40.], [ 11.75,  37.], [ 12.25,  25.], [ 12.75,  20.], [ 13.25,  18.], [ 13.75,  16.], [ 14.25,  12.], [ 14.75,  11.], [ 15.25,  11.], [ 15.75,  10.]])
+circular_mask_radii_func = interp1d(x, y, bounds_error=False, fill_value=(y[0], y[-1]))
 
-    Output
-    ------
-    radii: mask radii (array)
-    '''
-    pa, pb, pc = 6.5, 1300, 0.14
-
-    w1_ab = np.array(w1_ab)
-    radii = np.zeros(len(w1_ab))
-    mask = w1_ab>6.0 # set maximum mask radius at W1==6.0
-    if np.sum(mask)>0:
-        radii[mask] = pa + pb * 10**(-pc*(w1_ab[mask]))
-    if np.sum(~mask)>0:
-        radii[~mask] = pa + pb * 10**(-pc*(6.0))
-
-    # mask radius in arcsec
-    return radii
+# Define length for diffraction spikes mask
+x, y = np.transpose([[4.5, 600.], [5.5, 600.], [6.25, 540.], [6.75, 520.], [7.25, 500.], [7.75, 320.], [8.25, 300.], [8.75, 290.], [9.25, 160.], [9.75, 150.], [ 10.25, 140.], [ 10.75, 130.], [ 11.25, 130.], [ 11.75, 100.], [ 12.25, 60.], [ 12.75, 40.], [ 13., 40.]])
+ds_mask_length_func = interp1d(x, y, bounds_error=False, fill_value=(y[0], 0))
 
 
-def ds_mask_widths_func(w1_ab):
-    '''
-    Define mask width for diffraction spikes
-    
-    Inputs
-    ------
-    w1_ab: W1 magnitude in AB (array);
-
-    Output
-    ------
-    widths: mask widths (array)
-    '''
-
-    w1_ab = np.array(w1_ab)
-    widths = np.zeros(len(w1_ab))
-    mask = w1_ab<=8.0 # set maximum mask width at W1==8.0
-    if np.sum(mask)>0:
-        widths[mask] = 25. - (8-8)
-    mask = (w1_ab>8.0) & (w1_ab<=13.0)
-    if np.sum(mask)>0:
-        widths[mask] = 25. - (w1_ab[mask]-8)
-    mask = (w1_ab>13.0)
-    if np.sum(mask)>0:
-        widths[mask] = 0
-    return widths
-
-
-def ds_mask_length_func(w1_ab):
-    '''
-    Define mask radii for diffraction spikes
-    
-    Inputs
-    ------
-    w1_ab: W1 magnitude in AB (array);
-
-    Output
-    ------
-    radii: mask radii (array)
-    '''
-
-    w1_ab = np.array(w1_ab)
-    radii = np.zeros(len(w1_ab))
-    mask = w1_ab<=8.0 # set maximum mask radius at W1==8.0
-    if np.sum(mask)>0:
-        radii[mask] = 2 * np.exp(-0.41*8+8.9)
-    mask = (w1_ab>8.0) & (w1_ab<=13.0)
-    if np.sum(mask)>0:
-        radii[mask] = 2 * np.exp(-0.41*w1_ab[mask]+8.9)
-    mask = (w1_ab>13.0)
-    if np.sum(mask)>0:
-        radii[mask] = 0
-    return radii
+# Define width for diffraction spikes mask
+x, y = np.transpose([[8., 25.], [13., 16.]])
+ds_mask_width_func = interp1d(x, y, bounds_error=False, fill_value=(y[0], 0))
 
 
 def ds_masking_func(d_ra, d_dec, d2d, w1_ab):
@@ -111,7 +46,7 @@ def ds_masking_func(d_ra, d_dec, d2d, w1_ab):
     ds_flag: array of mask value; True if masked (contaminated).
     '''
     
-    ds_mask_widths = ds_mask_widths_func(w1_ab)
+    ds_mask_widths = ds_mask_width_func(w1_ab)
     ds_mask_length = ds_mask_length_func(w1_ab)
 
     mask1 = d_dec > (d_ra - ds_mask_widths/np.sqrt(2))
@@ -249,4 +184,3 @@ def query_catalog_mask(ra, dec, diff_spikes=True, return_diagnostics=False, wise
         more_info['ds_flag'] = ds_flag
 
         return cat_flag, more_info
-
