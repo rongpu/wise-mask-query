@@ -11,7 +11,7 @@ from scipy.interpolate import interp1d
 from astropy import units as u
 
 wise_cat_path_default = '/Users/roz18/Documents/Data/desi_lrg_selection/wisemask/w1_bright-13.3_trim_dr7_region_matched.fits'
-# wise_cat_path = '/global/homes/r/rongpu/mydesi/useful/w1_bright-13.3_trim_dr5_region.fits'
+# wise_cat_path = '/global/homes/r/rongpu/mydesi/useful/w1_bright-13.3_trim_dr7_region_matched.fits'
 
 
 # Define the radius mask of the circular mask
