@@ -183,7 +183,7 @@ def query_wise_coadd(ra, dec, n_match, coadd_fn=coadd_fn, verbose=True):
 
     return coadd_idx_final, pixcrd_x_final, pixcrd_y_final
 
-def query_mask_value(ra, dec, n_match, coadd_fn=coadd_fn, coadd_dir=coadd_dir, verbose=True):
+def query_mask_value(ra, dec, n_match, coadd_fn=coadd_fn, coadd_dir=coadd_dir, verbose=True, file_suffix='.fits.gz'):
     '''
     Query WISE mask value at each object loation.
     
@@ -227,7 +227,7 @@ def query_mask_value(ra, dec, n_match, coadd_fn=coadd_fn, coadd_dir=coadd_dir, v
         coadd_index = idx_unique[index]
         img_path = os.path.join(coadd_dir, 
             coadd['COADD_ID'][coadd_index][:3], 
-            'unwise-{}-msk.fits'.format(coadd['COADD_ID'][coadd_index]))
+            'unwise-{}-msk{}'.format(coadd['COADD_ID'][coadd_index], file_suffix))
         if os.path.exists(img_path):
             # print('YES!')
             data = fits.getdata(img_path)
