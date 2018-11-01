@@ -64,6 +64,9 @@ def query_wise_coadd(ra, dec, n_match, coadd_fn=coadd_fn, verbose=True):
 
     coadd = Table.read(coadd_fn)
 
+    if n_match<4:
+        raise ValueError('n_match should be no less than 4')
+
     if verbose: print('Matching to the nearest WISE coadds\n')
 
     ra1=np.array(coadd['ra_center'])
