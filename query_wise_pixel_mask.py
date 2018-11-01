@@ -9,7 +9,9 @@ from astropy import units as u
 from astropy import wcs
 
 coadd_fn = '/global/project/projectdirs/desi/users/rongpu/useful/astrom-atlas_radec_added.fits'
-coadd_dir = '/project/projectdirs/cosmo/data/unwise/neo2/unwise-coadds/fulldepth/'
+# coadd_dir = '/project/projectdirs/cosmo/data/unwise/neo2/unwise-coadds/fulldepth/'
+# coadd_dir = '/global/cscratch1/sd/ameisner/brightmask_lrg'
+coadd_dir = '/global/projecta/projectdirs/cosmo/work/wise/brightmask_latent_size'
 
 def create_wcs(coadd, coadd_id):
     '''
@@ -206,14 +208,15 @@ def query_mask_value(ra, dec, n_match, coadd_fn=coadd_fn, coadd_dir=coadd_dir, v
     '''
 
     coadd_idx, pixcrd_x, pixcrd_y = query_wise_coadd(ra, dec, n_match, coadd_fn)
+    mask_found = coadd_idx>=0
 
     # Convert the coordinates to integers with zero-based numbering of Python
     pixcrd_x = np.round(pixcrd_x-1.).astype(int)
     pixcrd_y = np.round(pixcrd_y-1.).astype(int)
 
     coadd = Table.read(coadd_fn)
-    idx_unique = np.unique(coadd_idx)
-    mask_value = np.zeros(len(ra), dtype=int)
+    idx_unique = np.unique(coadd_idx[mask_found])
+    mask_value = -1 * np.ones(len(ra), dtype=int)
 
     if verbose: print('Obtaining mask values from images')
     for index in range(len(idx_unique)):
@@ -225,10 +228,13 @@ def query_mask_value(ra, dec, n_match, coadd_fn=coadd_fn, coadd_dir=coadd_dir, v
         coadd_index = idx_unique[index]
         img_path = os.path.join(coadd_dir, 
             coadd['COADD_ID'][coadd_index][:3], 
-            coadd['COADD_ID'][coadd_index], 
             'unwise-{}-msk.fits.gz'.format(coadd['COADD_ID'][coadd_index]))
-        data = fits.getdata(img_path)
-        cat_mask = coadd_idx==coadd_index
-        mask_value[cat_mask] = data[pixcrd_y[cat_mask], pixcrd_x[cat_mask]]
+        if os.path.exists(img_path):
+            # print('YES!')
+            data = fits.getdata(img_path)
+            cat_mask = coadd_idx==coadd_index
+            mask_value[cat_mask] = data[pixcrd_y[cat_mask], pixcrd_x[cat_mask]]
+        else:
+            print('NOT FOUND:', img_path)
 
     return mask_value
