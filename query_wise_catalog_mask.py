@@ -61,7 +61,7 @@ def ds_masking_func(d_ra, d_dec, d2d, w1_ab):
 
 def query_catalog_mask(ra, dec, diff_spikes=True, return_diagnostics=False, wise_cat_path=None):
     '''
-    Catalog-based WISE mask for bright stars of W1_AB > 10.0.
+    Catalog-based WISE bright star mask.
 
     Input:
     ra, dec: coordinates;
