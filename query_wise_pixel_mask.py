@@ -71,12 +71,12 @@ def query_wise_coadd(ra, dec, n_match, coadd_fn=coadd_fn, verbose=True):
 
     if verbose: print('Matching to the nearest WISE coadds\n')
 
-    ra1=np.array(coadd['ra_center'])
-    dec1=np.array(coadd['dec_center'])
-    ra2=np.array(ra)
-    dec2=np.array(dec)
-    skycat1=SkyCoord(ra1*u.degree,dec1*u.degree, frame='icrs')
-    skycat2=SkyCoord(ra2*u.degree,dec2*u.degree, frame='icrs')
+    ra1 = np.array(coadd['ra_center'])
+    dec1 = np.array(coadd['dec_center'])
+    ra2 = np.array(ra)
+    dec2 = np.array(dec)
+    skycat1 = SkyCoord(ra1*u.degree,dec1*u.degree, frame='icrs')
+    skycat2 = SkyCoord(ra2*u.degree,dec2*u.degree, frame='icrs')
 
     # Find the nearest coadds for each object
     coadd_idx = np.zeros([n_match, len(ra)], dtype=int)
